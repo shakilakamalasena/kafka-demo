@@ -22,20 +22,27 @@ public class OrderService {
     @Transactional
     public OrderResponse createOrder(OrderRequest orderRequest) {
 
-        Order order = Order.builder()
-                .orderNumber(UUID.randomUUID().toString())
-                .customerEmail(orderRequest.getCustomerEmail())
-                .productId(orderRequest.getProductId())
-                .price(orderRequest.getPrice())
-                .quantity(orderRequest.getQuantity())
-                .status(Order.OrderStatus.CREATED)
-                .createdAt(LocalDateTime.now())
-                .build();
+        try {
 
-        Order savedOrder = orderRepository.save(order);
-        OrderResponse response = OrderResponse.fromEntity(savedOrder);
+            Order order = Order.builder()
+                    .orderNumber(UUID.randomUUID().toString())
+                    .customerEmail(orderRequest.getCustomerEmail())
+                    .productId(orderRequest.getProductId())
+                    .price(orderRequest.getPrice())
+                    .quantity(orderRequest.getQuantity())
+                    .status(Order.OrderStatus.CREATED)
+                    .createdAt(LocalDateTime.now())
+                    .build();
 
-        return response;
+            Order savedOrder = orderRepository.save(order);
+            OrderResponse response = OrderResponse.fromEntity(savedOrder);
+
+            return response;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create order: " + e.getMessage(), e);
+        }
+
     }
 
     public List<OrderResponse> getAllOrders() {
