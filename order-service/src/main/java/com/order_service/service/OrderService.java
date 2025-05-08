@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,4 +38,11 @@ public class OrderService {
         return response;
     }
 
+    public List<OrderResponse> getAllOrders() {
+
+        return orderRepository.findAll().stream()
+                .map(OrderResponse::fromEntity)
+                .collect(Collectors.toList());
+
+    }
 }
